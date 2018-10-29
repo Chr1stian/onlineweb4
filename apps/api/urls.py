@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^v1/rfid/$', shop_views.SetRFIDView.as_view(), name='set_rfid'),
     url(r'^v1/auth/$', sso_views.TokenView.as_view(), name='oauth2_provider_token'),
     url(r'^v1/attend/$', event_views.AttendViewSet.as_view(), name='event_attend'),
+    url(r'^v1/sign_up/$', event_views.SignUpApiView.as_view(), name='event_sign_up')
 ]

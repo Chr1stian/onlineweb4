@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import requests
 from datetime import timedelta
 
 import icalendar
@@ -411,3 +412,16 @@ def get_organizer_for_event(event):
         logger.warning('Could not get organizer for event "{}" (#{})!'.format(event, event.pk))
 
     return event_type
+
+def validate_captcha(captcha_value):
+        url = 'https://www.google.com/recaptcha/api/siteverify'
+        values ={
+            'secret': 'private_key',
+            'response': captcha_value
+        }
+        validation_response = requests.post(url, values)
+
+        if validation_response.status_code == 200:
+            return validation_response.json()["success"]
+        else:
+            return False

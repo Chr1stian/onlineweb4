@@ -2,6 +2,8 @@
 
 import json
 import logging
+import requests
+
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -33,7 +35,7 @@ from apps.events.utils import (handle_attend_event_payment, handle_attendance_ev
                                handle_event_ajax, handle_event_payment, handle_mail_participants)
 from apps.payment.models import Payment, PaymentDelay, PaymentRelation
 
-from .utils import EventCalendar
+from .utils import EventCalendar, validate_captcha
 
 
 def index(request):
@@ -405,7 +407,17 @@ class CompanyEventViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mi
     queryset = CompanyEvent.objects.all()
     serializer_class = CompanyEventSerializer
     permission_classes = (AllowAny,)
+class SignUpApiView(views.APIView):
 
+     def post(self, request, format=None):
+        valid = validate_captcha(request.data.get('captcha_value'))
+
+        if valid:
+            return Response({"message" : "signed up"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message" : "invalid captcha"}, status=status.HTTP_403_FORBIDDEN)
+
+        
 
 class AttendViewSet(views.APIView):
     authentication_classes = [OAuth2Authentication]
